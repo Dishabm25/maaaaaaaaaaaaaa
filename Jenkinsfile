@@ -10,7 +10,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'master', url:'https://github.com/Dishabm25/maaaaaaaaaaaaaa.git',
+                git branch: 'master', url:'',
                 credentialsId: 'github-token'
             }
         }
@@ -38,6 +38,24 @@ pipeline {
             steps {
                 sh 'mvn exec:java -Dexec.mainClass="com.example.app.App"'
             }
+        }
+    }
+    post {
+
+        success {
+            emailext (
+                subject: "SUCCESS: ${JOB_NAME} #${BUILD_NUMBER}",
+                body: "Build succeeded!\nCheck: ${BUILD_URL}",
+                to: "medhagaonkar5@gmail.com"
+            )
+        }
+
+        failure {
+            emailext (
+                subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
+                body: "Build failed!\nCheck: ${BUILD_URL}",
+                to: "medhagaonkar5@gmail.com"
+            )
         }
     }
 }
