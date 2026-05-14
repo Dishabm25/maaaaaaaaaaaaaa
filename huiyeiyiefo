@@ -1,0 +1,495 @@
+docker --version 
+sudo apt install apt-trasport-https ca-certificates curl software-properties-comman -y
+sudo apt install docker.io -y
+sudo systemctl start docker
+sudo systemctl enable docker
+docker --version
+sudo docker run hello-world
+mkdir my-app
+cd my-app
+
+
+gedit app.py
+from flask import Flask
+app=Flask(__name__)
+@app.route('/')
+def home():
+    return 'hello world running succesfully'
+if __name__=='__main__':
+    app.run(host='0.0.0.0',port=5001)
+
+gedit requirements.txt
+flask
+
+gedit Dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY app.py .
+EXPOSE 5001
+CMD ["python","app.py"]
+
+sudo systemctl start docker
+sudo systemctl status docker
+sudo docker build -t image-pqr .
+sudo docker images
+sudo docker run -d -p 5001:5001 --name container image-pqr
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Jenkinsfile
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_CREDENTIALS = 'dockerhub-creds' // The ID you'll set in Jenkins
+        APP_NAME = "likhithahm/flask-app"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t ${APP_NAME}:${BUILD_NUMBER} ."
+                }
+            }
+        }
+
+        stage('Login and Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: "${DOCKERHUB_CREDENTIALS}",
+                    passwordVariable: 'PASS',
+                    usernameVariable: 'USER'
+                )]) {
+
+                    sh "echo ${PASS} | docker login -u ${USER} --password-stdin"
+
+                    sh "docker push ${APP_NAME}:${BUILD_NUMBER}"
+                }
+            }
+        }
+    }
+}
+
+
+git init
+git config --global user.name "medha7299"
+git config --global user.email "medhagaonkar5@gmail.com"
+git commit -m "initial commit"
+git remote add origin https://github.com/medha7299/DockerP.git
+git branch -M master
+git push -u origin master
+sudo docker build -t my-app .
+sudo docker tag my-app:latest medha7299/my-app:latest
+sudo docker images
+sudo docker rm -f container
+sudo docker run -d -p 5001:5001 --name container medha7299/my-app:latest
+
+
+
+Terminal2
+sudo rm jenkins.war
+sudo rm -rf ~/.jenkins
+wget https://get.jenkins.io/war-stable/latest/jenkins.war
+java -jar jenkins.war --httpPort=8081
+open in local host 
+click on setting in that credentials put ur docker username and password and id as dockerhub-cred which is specified in pipeline code
+go to new item pipe line select scm git repo url add credenials and then build
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Step 2: Install Maven using below Command
+
+CMD : sudo apt update
+	sudo apt install maven -y
+
+Step 3: Create Maven Project
+run the below command 
+
+CMD:
+mvn archetype:generate -DgroupId=com.example.app \
+-DartifactId=demo-app \
+-DarchetypeArtifactId=maven-archetype-quickstart \
+-DinteractiveMode=false
+
+This will create a project with name demo-app
+
+Step 4: change the directory to demo-app using below command
+
+CMD : cd demo-app
+
+Step 5: list all the files from the demo-app directory
+
+CMD : ls
+o/p: pom.xml , src
+
+Step 6: Understand the project structure
+
+demo-app/
+ ├── pom.xml
+ ├── src/
+ │   ├── main/java
+ │   └── test/java
+
+Step 7: edit the pom.xml 
+
+CMD: nano pom.xml
+
+add the below sections to pom.xml
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example.app</groupId>
+  <artifactId>demo-app</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>demo-app</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+    <dependency>
+       <groupId>ch.qos.logback</groupId>
+       <artifactId>logback-classic</artifactId>
+       <version>1.4.14</version>
+    </dependency>
+
+    <!-- JUnit for testing -->
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>2.0.9</version>
+    </dependency>
+
+    <!-- Apache Commons -->
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.14.0</version>
+    </dependency>
+
+
+  </dependencies>
+<build>
+<plugins>
+
+        <!-- Compiler Plugin -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.11.0</version>
+            <configuration>
+                <source>17</source>
+                <target>17</target>
+            </configuration>
+        </plugin>
+
+        <!-- Test Plugin -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.1.2</version>
+        </plugin>
+
+    </plugins>
+</build>
+</project>
+
+save and exit nano using ctrl+O, Enter and ctrl+X
+
+Step 8: Write the java application code
+
+CMD: nano src/main/java/com/example/app/App.java
+
+copy the below code to App.java
+
+package com.example.app;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
+
+public class App {
+
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
+
+    public static void main(String[] args) {
+        String name = "CI/CD Pipeline";
+
+        if (StringUtils.isNotBlank(name)) {
+            String message = greet(name);
+            logger.info(message);
+            System.out.println(message);
+        } else {
+            logger.error("Name is empty!");
+        }
+    }
+
+    public static String greet(String name) {
+        return "Hello, " + name + "! Welcome to Maven CI/CD Demo.";
+    }
+}
+
+Step 9: Write test code 
+
+CMD: nano src/test/java/com/example/app/AppTest.java
+
+copy the below code to AppTest.java
+
+package com.example.app;
+
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+
+public class AppTest {
+
+    @Test
+    public void testGreet() {
+        String result = App.greet("Student");
+        assertEquals("Hello, Student! Welcome to Maven CI/CD Demo.", result);
+    }
+}
+
+
+Step 10: Build the project 
+
+CMD: mvn clean install
+
+Step 11: Run the application
+
+CMD: mvn exec:java -Dexec.mainClass="com.example.app.App"
+
+push this to the repo
+
+Jenkinsfile
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven'
+        jdk 'JDK21'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url:'https://github.com/Naveen04jan/ven.git',
+                credentialsId: 'github-token'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean compile'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                sh 'mvn package'
+            }
+        
+        
+        }
+        stage('Run Application') {
+            steps {
+                sh 'mvn exec:java -Dexec.mainClass="com.example.app.App"'
+            }
+        }
+    }
+}
+download jenkins
+
+them go to jenkins settings in that go to tools--add jdk instal auto,maven installation---add name it as Maven install auto save it
+plugins available plugins maven integration and junit realtime install
+then credentials add username of github and pass token and id as github token save it
+then build the pipeline new item
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Jenkinsfile
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven'
+        jdk 'JDK21'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'master', url:'https://github.com/medha7299/Maven.git',
+                credentialsId: 'github-token'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean compile'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                sh 'mvn package'
+            }
+        
+        
+        }
+        stage('Run Application') {
+            steps {
+                sh 'mvn exec:java -Dexec.mainClass="com.example.app.App"'
+            }
+        }
+    }
+    post {
+
+        success {
+            emailext (
+                subject: "SUCCESS: ${JOB_NAME} #${BUILD_NUMBER}",
+                body: "Build succeeded!\nCheck: ${BUILD_URL}",
+                to: "medhagaonkar5@gmail.com"
+            )
+        }
+
+        failure {
+            emailext (
+                subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
+                body: "Build failed!\nCheck: ${BUILD_URL}",
+                to: "medhagaonkar5@gmail.com"
+            )
+        }
+    }
+}
+
+
+
+login to google account --manage google account
+security & signin:enable 2v
+search--App password svae the code
+in jenkins settings--Systems---Extended email notification 
+                             ---smtp.gmail.com
+                            ---587 TLS credentials username--email pass--appcode
+Default recepaints email id save
